@@ -12,4 +12,8 @@ public class DialogController {
     public void dismiss() {
         stage.close();
     }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 }

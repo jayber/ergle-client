@@ -2,6 +2,7 @@ package com.ergle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.stage.DirectoryChooser;
@@ -36,15 +37,20 @@ public class Controller {
         if (selectedDirectory != null) {
             if (selectedDirectory.isDirectory()) {
                 watchedPaths.getItems().addAll(selectedDirectory.getAbsolutePath());
-            } else {
-                System.out.println("terying");
-                Stage dialog = new Stage();
-                dialog.initStyle(StageStyle.UTILITY);
-                Scene scene = FXMLLoader.load(getClass().getResource("dialog.fxml"));
-                dialog.setScene(scene);
-                dialog.show();
             }
+        } else {
+            Stage dialog = new Stage();
+            dialog.setTitle("Warning");
+            dialog.initStyle(StageStyle.UTILITY);
+            final FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("dialog.fxml"));
+            Parent parent = (Parent) loader.load();
+            final DialogController controller = loader.getController();
+            controller.setStage(dialog);
+            dialog.setScene(new Scene(parent));
+            dialog.show();
         }
+
     }
 
 }
