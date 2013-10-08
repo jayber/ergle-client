@@ -27,7 +27,7 @@
                     </stylesheets>
                 </Label>
                 <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#browse"
-                        style="" text="Add path" textAlignment="LEFT">
+                        style="" styleClass="controlButton" text="Add path" textAlignment="LEFT">
                     <stylesheets>
                         <URL value="@main.css"/>
                     </stylesheets>
