@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?scenebuilder-classpath-element ../../../src?>
+<?scenebuilder-stylesheet main.css?>
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -8,31 +9,22 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import java.net.URL?>
-<BorderPane prefHeight="295.0" prefWidth="223.0" xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/2.2" fx:controller="com.ergle.Controller">
+<BorderPane prefHeight="350.0" prefWidth="223.0" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/2.2" fx:controller="com.ergle.ClientController">
     <center>
-        <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+        <VBox prefHeight="300.0" prefWidth="100.0" spacing="7.0" styleClass="body">
             <children>
                 <Label styleClass="message" text="Welcome to the ergle.com client">
                     <font>
                         <Font size="13.0"/>
                     </font>
-                    <stylesheets>
-                        <URL value="@main.css"/>
-                    </stylesheets>
                 </Label>
                 <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#browse"
-                        style="" styleClass="controlButton" text="Add path" textAlignment="LEFT">
-                    <stylesheets>
-                        <URL value="@main.css"/>
-                    </stylesheets>
+                        styleClass="controlButton" text="Add path" textAlignment="LEFT">
                 </Button>
-                <ListView fx:id="watchedPaths" prefHeight="200.0" prefWidth="200.0"/>
+                <ListView fx:id="watchedPaths" prefHeight="300.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1"/>
@@ -40,8 +32,7 @@
         </VBox>
     </center>
     <top>
-        <HBox maxHeight="-Infinity" padding="$x1" prefHeight="60.0" prefWidth="200.0"
-              style="-fx-border-style: solid;&#10;-fx-border-color: #999;&#10;-fx-border-width: 0 0 1 0;&#10;">
+        <HBox maxHeight="-Infinity" padding="$x1" prefHeight="60.0" prefWidth="200.0" styleClass="header">
             <children>
                 <ImageView fitHeight="50.0" fitWidth="45.83333435031779" pickOnBounds="true" preserveRatio="true">
                     <image>

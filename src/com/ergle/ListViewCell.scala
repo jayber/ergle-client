@@ -1,10 +1,10 @@
 package com.ergle
 
-import javafx.scene.layout.AnchorPane
-import javafx.scene.control.{Button, Label}
+import javafx.scene.layout.{Priority, GridPane}
+import javafx.scene.control.{Tooltip, Button, Label}
 import javafx.event.{ActionEvent, EventHandler}
 
-class ListViewCell(action: (String) => Unit) extends AnchorPane {
+class ListViewCell(action: (String) => Unit) extends GridPane {
   val label = new Label
   val button = new Button
   button.setOnAction(new EventHandler[ActionEvent] {
@@ -12,14 +12,14 @@ class ListViewCell(action: (String) => Unit) extends AnchorPane {
       action(label.getText)
     }
   })
-  button.getStylesheets.add("com/ergle/main.css")
   button.getStyleClass.add("trashButton")
+  button.setTooltip(new Tooltip("Click to delete"))
 
   getChildren.addAll(label, button)
-  AnchorPane.setLeftAnchor(label, 0)
-  AnchorPane.setTopAnchor(label, 0)
-  AnchorPane.setRightAnchor(button, 0)
-  AnchorPane.setTopAnchor(button, 0)
+  GridPane.setConstraints(label, 0, 0)
+  GridPane.setConstraints(button, 1, 0)
+  GridPane.setHgrow(label, Priority.ALWAYS)
+  GridPane.setHgrow(button, Priority.NEVER)
 
   def getTextProperty = {
     label.textProperty()

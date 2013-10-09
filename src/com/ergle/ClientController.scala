@@ -1,7 +1,6 @@
 package com.ergle
 
-import javafx.collections.FXCollections
-import javafx.collections.ObservableList
+import javafx.collections.{ObservableList, ListChangeListener, FXCollections}
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -10,10 +9,14 @@ import javafx.scene.control.{ListCell, ListView}
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import javafx.stage.StageStyle
-import java.io.File
+import java.io.{PrintWriter, File}
 import javafx.util.Callback
+import javafx.collections.ListChangeListener.Change
+import scala.Predef._
+import scala.collection.JavaConverters._
+import scala.io.Source
 
-class Controller {
+class ClientController {
 
   def handleTrashAction(path: String): Unit = {
     content.remove(path)
@@ -22,7 +25,7 @@ class Controller {
   def initialize() {
     content = loadWatchedDirectories
     watchedPaths.setItems(content)
-    watchedPaths.setCellFactory(functionToCallBack(view => {
+    watchedPaths.setCellFactory(getFunctionAsCallBack(view => {
       val cell: ListCell[String] = new ListCell[String]
       val listViewCell: ListViewCell = new ListViewCell(handleTrashAction)
       cell.setGraphic(listViewCell)
@@ -32,14 +35,35 @@ class Controller {
     }))
   }
 
-  def functionToCallBack(function: (ListView[String] => ListCell[String])) = {
+  def getFunctionAsCallBack(function: (ListView[String] => ListCell[String])) = {
     new Callback[ListView[String], ListCell[String]] {
       def call(p1: ListView[String]): ListCell[String] = function(p1)
     }
   }
 
+  def read() = {
+    Source.fromFile(configFile).getLines().toList
+  }
+
   private def loadWatchedDirectories: ObservableList[String] = {
-    FXCollections.observableArrayList()
+    val saved = read()
+    val values: ObservableList[String] = FXCollections.observableArrayList(saved.asJava)
+    values.addListener(getFunctionAsListener({
+      save
+    }))
+    values
+  }
+
+  private def save() {
+    val writer = new PrintWriter(configFile)
+    try writer.write(content.asScala.mkString("\r\n"))
+    finally writer.close()
+  }
+
+  def getFunctionAsListener(function: () => Unit) = {
+    new ListChangeListener[String] {
+      def onChanged(p1: Change[_ <: String]) = function()
+    }
   }
 
   @FXML private def browse() {
@@ -72,4 +96,5 @@ class Controller {
   @FXML private var stage: Stage = null
   @FXML private var watchedPaths: ListView[String] = null
   private var content: ObservableList[String] = null
+  private var configFile = new File("paths.config")
 }

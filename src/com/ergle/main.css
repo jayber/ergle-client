@@ -13,8 +13,8 @@
 }
 
 .controlButton:hover {
-    -fx-background-color: #d8d8d8;
     -fx-border-color: #666;
+    -fx-background-color: #d8d8d8;
 }
 
 .trashButton {
@@ -23,6 +23,16 @@
     -fx-background-position: center;
 }
 
+.header {
+    -fx-border-style: solid;
+    -fx-border-color: #999;
+    -fx-border-width: 0 0 1 0;
+}
+
+.body {
+    -fx-background-color: #fff;
+}
+
 .message {
-    /*-fx-font-weight: bold;*/
+    -fx-font-weight: bold;
 }
