@@ -31,6 +31,7 @@ class ClientController {
 
   def initialize() {
     content = loadWatchedDirectories
+    val watchedPaths: PathsListBox = new PathsListBox()
     watchedPaths.content = content
     watchedPathsContainer.getChildren.add(watchedPaths)
   }
@@ -90,7 +91,6 @@ class ClientController {
 
   @FXML private var stage: Stage = null
   @FXML private var watchedPathsContainer: VBox = null
-  @FXML private var watchedPaths: PathsListBox = new PathsListBox()
   private var content: ObservableList[String] = null
-  private var configFile = new File("paths.config")
+  private val configFile = new File("paths.config")
 }
