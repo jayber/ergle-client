@@ -1,11 +1,14 @@
 package com.ergle
 
 import javafx.scene.layout.{Priority, GridPane}
-import javafx.scene.control.{Tooltip, Button, Label}
+import javafx.scene.control.{OverrunStyle, Tooltip, Button, Label}
 import javafx.event.{ActionEvent, EventHandler}
+import javafx.geometry.Insets
 
-class ListViewCell(action: (String) => Unit) extends GridPane {
-  val label = new Label
+class ListViewRow(value: String, action: (String) => Unit, alternateRow: Boolean) extends GridPane {
+  setUserData(value)
+  val label = new Label(value)
+  label.setTextOverrun(OverrunStyle.LEADING_ELLIPSIS)
   val button = new Button
   button.setOnAction(new EventHandler[ActionEvent] {
     def handle(p1: ActionEvent) = {
@@ -21,11 +24,9 @@ class ListViewCell(action: (String) => Unit) extends GridPane {
   GridPane.setHgrow(label, Priority.ALWAYS)
   GridPane.setHgrow(button, Priority.NEVER)
 
-  def getTextProperty = {
-    label.textProperty()
-  }
-
-  def buttonVisibleProperty = {
-    button.visibleProperty()
+  setPadding(new Insets(3))
+  getStyleClass.add("pathRow")
+  if (alternateRow) {
+    getStyleClass.add("alternateRow")
   }
 }

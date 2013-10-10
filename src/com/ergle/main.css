@@ -21,6 +21,7 @@
     -fx-background-image: url("trash.png");
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
+    -fx-background-size: 20px;
 }
 
 .header {
@@ -35,4 +36,21 @@
 
 .message {
     -fx-font-weight: bold;
+}
+
+.pathRow {
+    -fx-background-color: #ffffff;
+}
+
+.pathRow:hover {
+    -fx-background-color: #e0e8ff;
+}
+
+.alternateRow {
+    -fx-background-color: #f0f0f0;
+}
+
+.paths {
+    -fx-border-color: #999;
+    -fx-border-style: solid;
 }

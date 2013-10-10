@@ -17,7 +17,7 @@ class Main extends Application {
 
   def start(primaryStage: Stage) {
     val root: Parent = FXMLLoader.load(getClass.getResource("client.fxml"))
-    primaryStage.getIcons.add(new Image("/ergleIcon.png"))
+    primaryStage.getIcons.add(new Image("/ergleIconSq.png"))
     primaryStage.setTitle("ergle")
     val scene: Scene = new Scene(root)
     primaryStage.setScene(scene)

@@ -15,24 +15,24 @@ import javafx.collections.ListChangeListener.Change
 import scala.Predef._
 import scala.collection.JavaConverters._
 import scala.io.Source
+import javafx.scene.layout.VBox
+
+
+object ClientController {
+
+  def getFunctionAsListChangeListener(function: () => Unit) = {
+    new ListChangeListener[String] {
+      def onChanged(p1: Change[_ <: String]) = function()
+    }
+  }
+}
 
 class ClientController {
 
-  def handleTrashAction(path: String): Unit = {
-    content.remove(path)
-  }
-
   def initialize() {
     content = loadWatchedDirectories
-    watchedPaths.setItems(content)
-    watchedPaths.setCellFactory(getFunctionAsCallBack(view => {
-      val cell: ListCell[String] = new ListCell[String]
-      val listViewCell: ListViewCell = new ListViewCell(handleTrashAction)
-      cell.setGraphic(listViewCell)
-      listViewCell.getTextProperty.bind(cell.itemProperty())
-      listViewCell.buttonVisibleProperty.bind(cell.emptyProperty().not())
-      cell
-    }))
+    watchedPaths.content = content
+    watchedPathsContainer.getChildren.add(watchedPaths)
   }
 
   def getFunctionAsCallBack(function: (ListView[String] => ListCell[String])) = {
@@ -42,13 +42,14 @@ class ClientController {
   }
 
   def read() = {
-    Source.fromFile(configFile).getLines().toList
+    if (configFile.exists()) Source.fromFile(configFile).getLines().toList
+    else List.empty
   }
 
   private def loadWatchedDirectories: ObservableList[String] = {
     val saved = read()
     val values: ObservableList[String] = FXCollections.observableArrayList(saved.asJava)
-    values.addListener(getFunctionAsListener({
+    values.addListener(ClientController.getFunctionAsListChangeListener({
       save
     }))
     values
@@ -56,14 +57,8 @@ class ClientController {
 
   private def save() {
     val writer = new PrintWriter(configFile)
-    try writer.write(content.asScala.mkString("\r\n"))
+    try writer.write(content.asScala.mkString("\n"))
     finally writer.close()
-  }
-
-  def getFunctionAsListener(function: () => Unit) = {
-    new ListChangeListener[String] {
-      def onChanged(p1: Change[_ <: String]) = function()
-    }
   }
 
   @FXML private def browse() {
@@ -94,7 +89,8 @@ class ClientController {
   }
 
   @FXML private var stage: Stage = null
-  @FXML private var watchedPaths: ListView[String] = null
+  @FXML private var watchedPathsContainer: VBox = null
+  @FXML private var watchedPaths: PathsListBox = new PathsListBox()
   private var content: ObservableList[String] = null
   private var configFile = new File("paths.config")
 }
