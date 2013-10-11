@@ -5,7 +5,7 @@ import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.{ListCell, ListView}
+import javafx.scene.control.{ScrollPane, ListCell, ListView}
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import javafx.stage.StageStyle
@@ -15,11 +15,8 @@ import javafx.collections.ListChangeListener.Change
 import scala.Predef._
 import scala.collection.JavaConverters._
 import scala.io.Source
-import javafx.scene.layout.VBox
-
 
 object ClientController {
-
   def getFunctionAsListChangeListener(function: () => Unit) = {
     new ListChangeListener[String] {
       def onChanged(p1: Change[_ <: String]) = function()
@@ -33,7 +30,7 @@ class ClientController {
     content = loadWatchedDirectories
     val watchedPaths: PathsListBox = new PathsListBox()
     watchedPaths.content = content
-    watchedPathsContainer.getChildren.add(watchedPaths)
+    watchedPathsContainer.setContent(watchedPaths)
   }
 
   def getFunctionAsCallBack(function: (ListView[String] => ListCell[String])) = {
@@ -90,7 +87,7 @@ class ClientController {
   }
 
   @FXML private var stage: Stage = null
-  @FXML private var watchedPathsContainer: VBox = null
+  @FXML private var watchedPathsContainer: ScrollPane = null
   private var content: ObservableList[String] = null
   private val configFile = new File("paths.config")
 }
