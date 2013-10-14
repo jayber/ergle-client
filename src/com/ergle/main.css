@@ -6,7 +6,6 @@
 .controlButton {
     -fx-border-color: #999;
     -fx-border-style: solid;
-    -fx-border-radius: 2;
 
     -fx-background-color: #fff;
     -fx-background-radius: 0;
@@ -15,6 +14,7 @@
 
 .controlButton:hover {
     -fx-border-color: #d8d8d8 #666 #666 #d8d8d8;
+    -fx-border-radius: 1;
     /*-fx-background-color: #d8d8d8;*/
 }
 
@@ -58,5 +58,4 @@
 .paths {
     -fx-border-color: #999;
     -fx-border-style: solid;
-    -fx-border-radius: 2;
 }
