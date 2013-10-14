@@ -6,6 +6,7 @@
 .controlButton {
     -fx-border-color: #999;
     -fx-border-style: solid;
+    -fx-border-radius: 2;
 
     -fx-background-color: #fff;
     -fx-background-radius: 0;
@@ -13,8 +14,12 @@
 }
 
 .controlButton:hover {
-    -fx-border-color: #666;
-    -fx-background-color: #d8d8d8;
+    -fx-border-color: #d8d8d8 #666 #666 #d8d8d8;
+    /*-fx-background-color: #d8d8d8;*/
+}
+
+.controlButton:pressed {
+    -fx-border-color: #666 #d8d8d8 #d8d8d8 #666;
 }
 
 .trashButton {
@@ -53,4 +58,5 @@
 .paths {
     -fx-border-color: #999;
     -fx-border-style: solid;
+    -fx-border-radius: 2;
 }
