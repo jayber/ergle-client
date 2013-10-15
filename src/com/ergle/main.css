@@ -13,13 +13,11 @@
 }
 
 .controlButton:hover {
-    -fx-border-color: #d8d8d8 #666 #666 #d8d8d8;
-    -fx-border-radius: 1;
-    /*-fx-background-color: #d8d8d8;*/
+    -fx-background-color: linear-gradient(to bottom, #fff, #d8d8d8);
 }
 
 .controlButton:pressed {
-    -fx-border-color: #666 #d8d8d8 #d8d8d8 #666;
+    -fx-background-color: linear-gradient(to bottom, #666 5%, #999, #d8d8d8);
 }
 
 .trashButton {
@@ -27,6 +25,15 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
     -fx-background-size: 20px;
+    -fx-background-radius: 0;
+}
+
+.trashButton:hover {
+    -fx-background-image: url("trashHover.png");
+}
+
+.trashButton:pressed {
+    -fx-background-image: url("trashPressed.png");
 }
 
 .header {
