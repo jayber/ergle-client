@@ -1,4 +1,4 @@
-package com.ergle
+package ergle
 
 import javafx.scene.layout.{Priority, VBox}
 import javafx.collections.{FXCollections, ObservableList}

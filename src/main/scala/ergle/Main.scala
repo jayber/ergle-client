@@ -1,4 +1,4 @@
-package com.ergle
+package ergle
 
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
@@ -17,11 +17,11 @@ class Main extends Application {
 
   def start(primaryStage: Stage) {
     val root: Parent = FXMLLoader.load(getClass.getResource("client.fxml"))
-    primaryStage.getIcons.add(new Image("/ergleIconSq.png"))
+    primaryStage.getIcons.add(new Image("/favicon.png"))
     primaryStage.setTitle("ergle")
     val scene: Scene = new Scene(root)
     primaryStage.setScene(scene)
-    scene.getStylesheets.add("com/ergle/main.css")
+    scene.getStylesheets.add("ergle/main.css")
     primaryStage.show()
   }
 }

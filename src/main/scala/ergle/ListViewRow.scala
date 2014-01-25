@@ -1,4 +1,4 @@
-package com.ergle
+package ergle
 
 import javafx.scene.layout.{Priority, GridPane}
 import javafx.scene.control.{OverrunStyle, Tooltip, Button, Label}

@@ -1,4 +1,4 @@
-package com.ergle
+package ergle
 
 import javafx.fxml.FXML
 import javafx.stage.Stage

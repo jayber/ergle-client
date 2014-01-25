@@ -1,4 +1,4 @@
-package com.ergle
+package ergle
 
 import javafx.collections.{ObservableList, ListChangeListener, FXCollections}
 import javafx.fxml.FXML
@@ -9,12 +9,11 @@ import javafx.scene.control.{ScrollPane, ListCell, ListView}
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import javafx.stage.StageStyle
-import java.io.{PrintWriter, File}
+import java.io.File
 import javafx.util.Callback
 import javafx.collections.ListChangeListener.Change
 import scala.Predef._
 import scala.collection.JavaConverters._
-import scala.io.Source
 
 object ClientController {
   def getFunctionAsListChangeListener(function: () => Unit) = {
@@ -24,12 +23,11 @@ object ClientController {
   }
 }
 
-class ClientController {
+class ClientController extends PathsConfig {
 
   def initialize() {
-    content = loadWatchedDirectories
     val watchedPaths: PathsListBox = new PathsListBox()
-    watchedPaths.content = content
+    watchedPaths.content = watchedDirectoriesList
     watchedPathsContainer.setContent(watchedPaths)
   }
 
@@ -39,24 +37,13 @@ class ClientController {
     }
   }
 
-  def read() = {
-    if (configFile.exists()) Source.fromFile(configFile).getLines().toList
-    else List.empty
-  }
-
   private def loadWatchedDirectories: ObservableList[String] = {
     val saved = read()
     val values: ObservableList[String] = FXCollections.observableArrayList(saved.asJava)
-    values.addListener(ClientController.getFunctionAsListChangeListener({
-      save
+    values.addListener(ClientController.getFunctionAsListChangeListener(() => {
+      save(values.asScala)
     }))
     values
-  }
-
-  private def save() {
-    val writer = new PrintWriter(configFile)
-    try writer.write(content.asScala.mkString("\n"))
-    finally writer.close()
   }
 
   @FXML private def browse() {
@@ -65,7 +52,7 @@ class ClientController {
     val selectedDirectory: File = directoryChooser.showDialog(stage)
     if (selectedDirectory != null) {
       if (selectedDirectory.isDirectory) {
-        content.add(selectedDirectory.getAbsolutePath)
+        watchedDirectoriesList.add(selectedDirectory.getAbsolutePath)
       }
     }
     else {
@@ -88,6 +75,5 @@ class ClientController {
 
   @FXML private var stage: Stage = null
   @FXML private var watchedPathsContainer: ScrollPane = null
-  private var content: ObservableList[String] = null
-  private val configFile = new File("paths.config")
+  val watchedDirectoriesList: ObservableList[String] = loadWatchedDirectories
 }
