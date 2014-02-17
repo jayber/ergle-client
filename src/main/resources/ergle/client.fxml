@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <BorderPane prefHeight="668.0" prefWidth="437.0" top="$null" xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/2.2" fx:controller="ergle.ClientController">
+            xmlns="http://javafx.com/javafx/2.2" fx:controller="ergle.ui.ClientController">
     <center>
         <VBox prefHeight="353.0" prefWidth="223.0" spacing="7.0" styleClass="body">
             <children>
