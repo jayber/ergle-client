@@ -1,6 +1,6 @@
 package ergle.synch
 
-import java.io.{FilenameFilter, File}
+import java.io.{FileFilter, File}
 import javax.inject.{Singleton, Named}
 import com.typesafe.scalalogging.slf4j.Logging
 
@@ -41,7 +41,9 @@ class FileLister extends Logging {
   def list(path: String): Array[File] = {
     val directory = file(path)
     val ergleDirectory = fileForParent(directory, ".ergle")
-    val files = makeNullEmptyArray(directory.listFiles(new ErgleFileNameFilter))
+    val files = makeNullEmptyArray(directory.listFiles(new ErgleFileFilter)).sortWith {
+      (f1, f2) => f1.lastModified < f2.lastModified
+    }
     val filesToSynch = ergleDirectory.exists() match {
       case false => files
       case _ => findDelinquentFiles(files, ergleDirectory)
@@ -68,11 +70,10 @@ class FileLister extends Logging {
   }
 }
 
-class ErgleFileNameFilter extends FilenameFilter {
-  override def accept(dir: File, name: String): Boolean = {
-    name match {
-      case ".ergle" => false
-      case _ => true
-    }
+class ErgleFileFilter extends FileFilter {
+  val exclude = Array("desktop.ini", "Thumbs.db")
+
+  override def accept(file: File): Boolean = {
+    !(file.isDirectory || file.getName.startsWith(".") || exclude.contains(file.getName))
   }
 }

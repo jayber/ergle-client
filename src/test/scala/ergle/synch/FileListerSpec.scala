@@ -13,14 +13,14 @@ class FileListerSpec extends FlatSpec with MockitoSugar {
     val ergleDirectoryFile = mock[File]
     var trackingFilesMockList: Seq[File] = scala.collection.mutable.Seq[File]()
     when(ergleDirectoryFile.exists()).thenReturn(false)
-    when(parentDirectoryFile.listFiles(org.mockito.Matchers.any[ErgleFileNameFilter])) thenReturn Array(new File("file1"), new File("file2"))
+    when(parentDirectoryFile.listFiles(org.mockito.Matchers.any[ErgleFileFilter])) thenReturn Array(new File("file1"), new File("file2"))
 
     val files = list("directory")
 
     assert(files.length == 2)
     verify(ergleDirectoryFile, times(2)).exists()
     verify(ergleDirectoryFile).mkdir()
-    verify(parentDirectoryFile).listFiles(org.mockito.Matchers.any[ErgleFileNameFilter])
+    verify(parentDirectoryFile).listFiles(org.mockito.Matchers.any[ErgleFileFilter])
 
     trackingFilesMockList.foreach {
       file => verify(file).createNewFile()
@@ -52,7 +52,7 @@ class FileListerSpec extends FlatSpec with MockitoSugar {
     when(file3.getName) thenReturn "file3"
     when(file1.lastModified()) thenReturn System.currentTimeMillis() - 1000
     when(file2.lastModified()) thenReturn System.currentTimeMillis()
-    when(parentDirectoryFile.listFiles(org.mockito.Matchers.any[ErgleFileNameFilter])) thenReturn Array(file1, file2, file3)
+    when(parentDirectoryFile.listFiles(org.mockito.Matchers.any[ErgleFileFilter])) thenReturn Array(file1, file2, file3)
     val trackFile1 = mock[File]
     val trackFile2 = mock[File]
     val trackFile3 = mock[File]
@@ -70,7 +70,7 @@ class FileListerSpec extends FlatSpec with MockitoSugar {
     assert(!files.contains(file1))
 
     verify(ergleDirectoryFile, times(2)).exists()
-    verify(parentDirectoryFile).listFiles(org.mockito.Matchers.any[ErgleFileNameFilter])
+    verify(parentDirectoryFile).listFiles(org.mockito.Matchers.any[ErgleFileFilter])
     verify(trackFile3).createNewFile()
     verify(trackFile2).setLastModified(org.mockito.Matchers.anyLong())
 
@@ -91,8 +91,19 @@ class FileListerSpec extends FlatSpec with MockitoSugar {
   }
 
   "ErgleFileNameFilter" should "not accept files called .ergle" in {
-    val filter = new ErgleFileNameFilter
+    val filter = new ErgleFileFilter
 
-    assert(!filter.accept(null, ".ergle"))
+    assert(!filter.accept(new File(".ergle")))
+    assert(!filter.accept(new File(".test")))
+
+    assert(!filter.accept(new File("desktop.ini")))
+    assert(!filter.accept(new File("Thumbs.db")))
+
+    val testDir = mock[File]
+    when(testDir.isDirectory) thenReturn true
+    when(testDir.getName) thenReturn "testDir"
+    assert(!filter.accept(testDir))
+
+
   }
 }

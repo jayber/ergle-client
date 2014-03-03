@@ -49,7 +49,7 @@ class ScheduleActor extends Actor {
     case Schedule => {
       val system = ActorSystem("synchSystem")
       val synchActor = system.actorOf(Props[SynchActor], "synchActor")
-      system.scheduler.scheduleOnce(10 minutes, synchActor, Start)
+      system.scheduler.scheduleOnce(1 minutes, synchActor, Start)
     }
   }
 }

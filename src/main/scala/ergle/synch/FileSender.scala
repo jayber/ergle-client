@@ -18,12 +18,16 @@ class FileSender extends Logging {
     logger.debug(s"sending file: ${file.getName}")
 
     val apiUrl = configProvider.config.getString(ConfigProvider.apiUrlKey)
-    val requestHolder = url(apiUrl)
-
-    requestHolder.withQueryString(("filename", file.getName)).put(file).map {
-      response =>
-        logger.debug(s"file id: ${response.body}")
-    }
+    if (apiUrl != null) {
+      val requestHolder = url(apiUrl)
+      val email = configProvider.config.getString(ConfigProvider.email)
+      if (email != null) {
+        requestHolder.withQueryString(("filename", file.getName), ("email", email), ("lastModified", file.lastModified.toString)).put(file).map {
+          response =>
+            logger.debug(s"file id: ${response.body}")
+        }
+      } else logger.debug(s"no email address configured")
+    } else logger.debug(s"no api URL")
   }
 
   def url(url: String) = {

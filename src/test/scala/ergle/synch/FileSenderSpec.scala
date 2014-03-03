@@ -19,12 +19,10 @@ class FileSenderSpec extends FlatSpec with MockitoSugar {
     when(configProvider.config) thenReturn config
     val testApiUrl = "testApiUrl"
     when(config.getString(ConfigProvider.apiUrlKey)) thenReturn testApiUrl
+    val email = "email"
+    when(config.getString(ConfigProvider.email)) thenReturn email
 
-    val file = new File("file")
-    val requestHolder = mock[WSRequestHolder]
-    when(requestHolder.withQueryString(("filename", "file"))) thenReturn requestHolder
-    val future = mock[Future[Response]]
-    when(requestHolder.put(file)) thenReturn future
+    val (file, requestHolder) = setUpOtherMocks(email)
 
     send(file)
 
@@ -34,6 +32,62 @@ class FileSenderSpec extends FlatSpec with MockitoSugar {
       url === testApiUrl
       requestHolder
     }
+  }
 
+  "FileSender" should
+    "NOT send files without email address configured" in new FileSender {
+    configProvider = mock[ConfigProvider]
+    val config = mock[Config]
+    when(configProvider.config) thenReturn config
+    val testApiUrl = "testApiUrl"
+    when(config.getString(ConfigProvider.apiUrlKey)) thenReturn testApiUrl
+    val email = "email"
+    when(config.getString(ConfigProvider.email)) thenReturn null
+
+    val (file, requestHolder) = setUpOtherMocks(email)
+
+    send(file)
+
+    verifyNoMoreInteractions(requestHolder)
+
+    override def url(url: String) = {
+      url === testApiUrl
+      requestHolder
+    }
+  }
+
+  "FileSender" should
+    "NOT send files without api URL configured" in new FileSender {
+    configProvider = mock[ConfigProvider]
+    val config = mock[Config]
+    when(configProvider.config) thenReturn config
+    val testApiUrl = "testApiUrl"
+    when(config.getString(ConfigProvider.apiUrlKey)) thenReturn null
+    val email = "email"
+    when(config.getString(ConfigProvider.email)) thenReturn email
+
+    val (file, requestHolder) = setUpOtherMocks(email)
+
+    send(file)
+
+    verifyNoMoreInteractions(requestHolder)
+
+    override def url(url: String) = {
+      url === testApiUrl
+      requestHolder
+    }
+  }
+
+
+  def setUpOtherMocks(email: String) = {
+    val file = mock[File]
+    when(file.getName) thenReturn "file"
+    val modDate = System.currentTimeMillis()
+    when(file.lastModified) thenReturn modDate
+    val requestHolder = mock[WSRequestHolder]
+    when(requestHolder.withQueryString(("filename", "file"), ("email", email), ("lastModified", modDate.toString))) thenReturn requestHolder
+    val future = mock[Future[Response]]
+    when(requestHolder.put(file)) thenReturn future
+    (file, requestHolder)
   }
 }

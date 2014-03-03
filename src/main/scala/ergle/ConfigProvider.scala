@@ -6,6 +6,8 @@ import java.io.File
 
 
 object ConfigProvider {
+  val email: String = "email"
+
   val apiUrlKey: String = "api.url"
 
   private val parentFile: File = new File(System.getProperty("user.home"), ".ergle")
