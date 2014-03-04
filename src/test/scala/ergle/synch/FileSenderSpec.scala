@@ -20,7 +20,7 @@ class FileSenderSpec extends FlatSpec with MockitoSugar {
     val testApiUrl = "testApiUrl"
     when(config.getString(ConfigProvider.apiUrlKey)) thenReturn testApiUrl
     val email = "email"
-    when(config.getString(ConfigProvider.email)) thenReturn email
+    when(config.getString(ConfigProvider.emailKey)) thenReturn email
 
     val (file, requestHolder) = setUpOtherMocks(email)
 
@@ -42,7 +42,7 @@ class FileSenderSpec extends FlatSpec with MockitoSugar {
     val testApiUrl = "testApiUrl"
     when(config.getString(ConfigProvider.apiUrlKey)) thenReturn testApiUrl
     val email = "email"
-    when(config.getString(ConfigProvider.email)) thenReturn null
+    when(config.getString(ConfigProvider.emailKey)) thenReturn null
 
     val (file, requestHolder) = setUpOtherMocks(email)
 
@@ -64,7 +64,7 @@ class FileSenderSpec extends FlatSpec with MockitoSugar {
     val testApiUrl = "testApiUrl"
     when(config.getString(ConfigProvider.apiUrlKey)) thenReturn null
     val email = "email"
-    when(config.getString(ConfigProvider.email)) thenReturn email
+    when(config.getString(ConfigProvider.emailKey)) thenReturn email
 
     val (file, requestHolder) = setUpOtherMocks(email)
 

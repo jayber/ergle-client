@@ -20,7 +20,7 @@ class FileSender extends Logging {
     val apiUrl = configProvider.config.getString(ConfigProvider.apiUrlKey)
     if (apiUrl != null) {
       val requestHolder = url(apiUrl)
-      val email = configProvider.config.getString(ConfigProvider.email)
+      val email = configProvider.config.getString(ConfigProvider.emailKey)
       if (email != null) {
         requestHolder.withQueryString(("filename", file.getName), ("email", email), ("lastModified", file.lastModified.toString)).put(file).map {
           response =>

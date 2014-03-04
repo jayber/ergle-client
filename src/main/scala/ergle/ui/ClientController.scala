@@ -5,7 +5,7 @@ import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.{ScrollPane, ListCell, ListView}
+import javafx.scene.control._
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import javafx.stage.StageStyle
@@ -14,7 +14,7 @@ import javafx.util.Callback
 import javafx.collections.ListChangeListener.Change
 import scala.Predef._
 import scala.collection.JavaConverters._
-import ergle.PathsConfig
+import ergle.{ConfigProvider, PathsConfig}
 
 object ClientController {
   def getFunctionAsListChangeListener(function: () => Unit) = {
@@ -30,6 +30,7 @@ class ClientController extends PathsConfig {
     val watchedPaths: PathsListBox = new PathsListBox()
     watchedPaths.content = watchedDirectoriesList
     watchedPathsContainer.setContent(watchedPaths)
+    emailField.setText(ConfigProvider.config.getString(ConfigProvider.emailKey))
   }
 
   def getFunctionAsCallBack(function: (ListView[String] => ListCell[String])) = {
@@ -74,7 +75,13 @@ class ClientController extends PathsConfig {
     dialog.show()
   }
 
+  @FXML def saveEmail() {
+    ConfigProvider.save(ConfigProvider.emailKey, emailField.getText)
+  }
+
   @FXML private var stage: Stage = null
   @FXML private var watchedPathsContainer: ScrollPane = null
   val watchedDirectoriesList: ObservableList[String] = loadWatchedDirectories
+  @FXML private var emailField: TextField = null
+  @FXML private var emailSaveButton: Button = null
 }
