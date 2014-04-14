@@ -44,10 +44,14 @@ class FileLister extends Logging {
     val files = makeNullEmptyArray(directory.listFiles(new ErgleFileFilter)).sortWith {
       (f1, f2) => f1.lastModified < f2.lastModified
     }
+    logger.debug(s"directory contains: ${files.mkString(";")}")
+
     val filesToSynch = ergleDirectory.exists() match {
       case false => files
       case _ => findDelinquentFiles(files, ergleDirectory)
     }
+    logger.debug(s"filtered directory contains: ${filesToSynch.mkString(";")}")
+
     trackFiles(filesToSynch, ergleDirectory)
     filesToSynch
   }
@@ -62,7 +66,7 @@ class FileLister extends Logging {
   }
 
   def file(path: String) = {
-    new File(path)
+    new File(path).getCanonicalFile
   }
 
   def fileForParent(parent: File, path: String) = {

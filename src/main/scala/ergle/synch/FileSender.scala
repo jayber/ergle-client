@@ -31,6 +31,6 @@ class FileSender extends Logging {
   }
 
   def url(url: String) = {
-    WS.url(url).withRequestTimeout(1000)
+    WS.url(url).withRequestTimeout(1000 * 10)
   }
 }

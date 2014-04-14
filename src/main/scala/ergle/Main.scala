@@ -23,7 +23,10 @@ class Main extends Application {
 
   def start(primaryStage: Stage) {
     val root: Parent = FXMLLoader.load(getClass.getResource("client.fxml"))
-    primaryStage.getIcons.add(new Image("/favicon.png"))
+    primaryStage.getIcons.add(new Image("/favicon1.png"))
+    primaryStage.getIcons.add(new Image("/favicon2.png"))
+    primaryStage.getIcons.add(new Image("/favicon3.png"))
+    primaryStage.getIcons.add(new Image("/favicon4.png"))
     primaryStage.setTitle("ergle")
     val scene: Scene = new Scene(root)
     primaryStage.setScene(scene)

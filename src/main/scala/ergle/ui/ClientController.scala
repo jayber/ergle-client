@@ -51,6 +51,7 @@ class ClientController extends PathsConfig {
   @FXML private def browse() {
     val directoryChooser: DirectoryChooser = new DirectoryChooser
     directoryChooser.setTitle("Browse directories")
+
     val selectedDirectory: File = directoryChooser.showDialog(stage)
     if (selectedDirectory != null) {
       if (selectedDirectory.isDirectory) {

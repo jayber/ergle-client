@@ -9,7 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 @Named
 @Singleton
-class Syncher extends PathsConfig with Logging {
+class Syncher extends Logging {
   def start() {
     val system = ActorSystem("synchSystem")
     val synchActor = system.actorOf(Props[SynchActor], "synchActor")
