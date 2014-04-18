@@ -13,6 +13,7 @@ import javafx.event.EventHandler
 object Main {
 
   val ctx: AnnotationConfigApplicationContext = new AnnotationConfigApplicationContext()
+  var mainStage: Stage = null
 
   def main(args: Array[String]) {
     Application.launch(classOf[Main], args: _*)
@@ -22,6 +23,7 @@ object Main {
 class Main extends Application {
 
   def start(primaryStage: Stage) {
+    Main.mainStage = primaryStage
     val root: Parent = FXMLLoader.load(getClass.getResource("client.fxml"))
     primaryStage.getIcons.add(new Image("/favicon1.png"))
     primaryStage.getIcons.add(new Image("/favicon2.png"))

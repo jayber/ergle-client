@@ -6,15 +6,15 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control._
-import javafx.stage.DirectoryChooser
-import javafx.stage.Stage
-import javafx.stage.StageStyle
+import javafx.stage.{Popup, DirectoryChooser, Stage, StageStyle}
 import java.io.File
 import javafx.util.Callback
 import javafx.collections.ListChangeListener.Change
 import scala.Predef._
 import scala.collection.JavaConverters._
-import ergle.{ConfigProvider, PathsConfig}
+import ergle.{Main, ConfigProvider, PathsConfig}
+import javafx.scene.image.{Image, ImageView}
+import javafx.application.Platform
 
 object ClientController {
   def getFunctionAsListChangeListener(function: () => Unit) = {
@@ -78,6 +78,23 @@ class ClientController extends PathsConfig {
 
   @FXML def saveEmail() {
     ConfigProvider.save(ConfigProvider.emailKey, emailField.getText)
+
+    val popup = new Popup
+    popup.getContent().addAll(new ImageView(new Image("tick.png")))
+    popup.show(Main.mainStage)
+
+    new Thread(new Runnable() {
+      @Override def run() {
+        Thread.sleep(1000)
+        Platform.runLater(new Runnable() {
+          @Override
+          def run() {
+            popup.hide()
+          }
+        })
+      }
+    }).start()
+
   }
 
   @FXML private var stage: Stage = null
