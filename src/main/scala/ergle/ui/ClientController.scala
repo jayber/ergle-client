@@ -15,6 +15,7 @@ import scala.collection.JavaConverters._
 import ergle.{Main, ConfigProvider, PathsConfig}
 import javafx.scene.image.{Image, ImageView}
 import javafx.application.Platform
+import ergle.synch.FileLister
 
 object ClientController {
   def getFunctionAsListChangeListener(function: () => Unit) = {
@@ -56,11 +57,16 @@ class ClientController extends PathsConfig {
     if (selectedDirectory != null) {
       if (selectedDirectory.isDirectory) {
         watchedDirectoriesList.add(selectedDirectory.getAbsolutePath)
+        purgeTrackingFiles(selectedDirectory)
       }
     }
     else {
       showWarning()
     }
+  }
+
+  def purgeTrackingFiles(directory: File) {
+    new File(directory, FileLister.trackingDirectory).listFiles().foreach(_.delete())
   }
 
   def showWarning() {

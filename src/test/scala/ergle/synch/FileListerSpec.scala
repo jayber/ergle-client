@@ -18,8 +18,7 @@ class FileListerSpec extends FlatSpec with MockitoSugar {
     val files = list("directory")
 
     assert(files.length == 2)
-    verify(ergleDirectoryFile, times(2)).exists()
-    verify(ergleDirectoryFile).mkdir()
+    verify(ergleDirectoryFile, times(1)).exists()
     verify(parentDirectoryFile).listFiles(org.mockito.Matchers.any[ErgleFileFilter])
 
     trackingFilesMockList.foreach {
@@ -69,10 +68,8 @@ class FileListerSpec extends FlatSpec with MockitoSugar {
     assert(files.contains(file3))
     assert(!files.contains(file1))
 
-    verify(ergleDirectoryFile, times(2)).exists()
+    verify(ergleDirectoryFile, times(1)).exists()
     verify(parentDirectoryFile).listFiles(org.mockito.Matchers.any[ErgleFileFilter])
-    verify(trackFile3).createNewFile()
-    verify(trackFile2).setLastModified(org.mockito.Matchers.anyLong())
 
     override def file(path: String): File = {
       parentDirectoryFile

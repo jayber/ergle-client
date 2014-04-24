@@ -4,30 +4,25 @@ import java.io.{FileFilter, File}
 import javax.inject.{Singleton, Named}
 import com.typesafe.scalalogging.slf4j.Logging
 
+object FileLister {
+
+  val trackingDirectory = ".ergle"
+
+}
+
 @Named
 @Singleton
 class FileLister extends Logging {
 
-  def trackFiles(files: Array[File], trackingDirectory: File) {
-    trackingDirectory.exists() match {
-      case false =>
-        logger.debug(s"creating tracking directory: ${trackingDirectory.getPath}")
-        trackingDirectory.mkdir()
-      case true =>
-    }
-    files.foreach {
-      file =>
-        val trackFile = fileForParent(trackingDirectory, file.getName)
-        trackFile.exists() match {
-          case false =>
-            logger.debug(s"creating track file: ${trackFile.getPath}")
-            trackFile.createNewFile
-          case true =>
-            logger.debug(s"updating track file: ${trackFile.getPath}")
-            trackFile.setLastModified(System.currentTimeMillis())
-        }
-    }
+  def file(path: String) = {
+    new File(path).getCanonicalFile
   }
+
+  def fileForParent(parent: File, path: String) = {
+    new File(parent, path)
+  }
+
+  def ergleDirectory(directory: File) = fileForParent(directory, FileLister.trackingDirectory)
 
   def findDelinquentFiles(files: Array[File], trackingDirectory: File): Array[File] = {
     files.filter {
@@ -40,19 +35,17 @@ class FileLister extends Logging {
 
   def list(path: String): Array[File] = {
     val directory = file(path)
-    val ergleDirectory = fileForParent(directory, ".ergle")
     val files = makeNullEmptyArray(directory.listFiles(new ErgleFileFilter)).sortWith {
       (f1, f2) => f1.lastModified < f2.lastModified
     }
     logger.debug(s"directory contains: ${files.mkString(";")}")
 
-    val filesToSynch = ergleDirectory.exists() match {
+    val filesToSynch = ergleDirectory(directory).exists() match {
       case false => files
-      case _ => findDelinquentFiles(files, ergleDirectory)
+      case _ => findDelinquentFiles(files, ergleDirectory(directory))
     }
     logger.debug(s"filtered directory contains: ${filesToSynch.mkString(";")}")
 
-    trackFiles(filesToSynch, ergleDirectory)
     filesToSynch
   }
 
@@ -63,14 +56,6 @@ class FileLister extends Logging {
     } else {
       files
     }
-  }
-
-  def file(path: String) = {
-    new File(path).getCanonicalFile
-  }
-
-  def fileForParent(parent: File, path: String) = {
-    new File(parent, path)
   }
 }
 
