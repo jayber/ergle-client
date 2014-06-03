@@ -6,10 +6,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane prefHeight="668.0" prefWidth="437.0" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane prefHeight="668.0" prefWidth="537.0" xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/2.2" fx:controller="ergle.ui.ClientController">
     <center>
-        <VBox prefHeight="353.0" prefWidth="223.0" spacing="7.0" styleClass="body">
+        <VBox prefHeight="353.0" prefWidth="323.0" spacing="7.0" styleClass="body">
             <children>
                 <Label text="Add or remove folders from ergle" underline="false" wrapText="true"/>
                 <Button alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#browse"

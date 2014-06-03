@@ -11,7 +11,7 @@ object ConfigProvider {
 
   val apiUrlKey: String = "api.url"
 
-  val defaultApiValue: String = "http://ergle.net:9002/files/"
+  val defaultApiValue: String = "http://ergle.net:9002/events/$email/files/"
 
   val defaultValues = ConfigFactory.empty().withValue(emailKey, ConfigValueFactory.fromAnyRef("")).withValue(apiUrlKey, ConfigValueFactory.fromAnyRef(defaultApiValue))
 

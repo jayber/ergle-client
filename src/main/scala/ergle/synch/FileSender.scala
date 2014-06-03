@@ -15,23 +15,33 @@ class FileSender extends Logging {
   @Inject
   var configProvider: ConfigProvider = null
 
-  def send(file: File)(implicit ec: ExecutionContext) {
+  def send(file: File, tag: Option[String])(implicit ec: ExecutionContext) {
     logger.debug(s"sending file: ${file.getName}")
 
     val apiUrl = configProvider.config.getString(ConfigProvider.apiUrlKey)
     if (apiUrl != null && !apiUrl.isEmpty) {
-      val requestHolder = url(apiUrl)
       val email = configProvider.config.getString(ConfigProvider.emailKey)
       if (email != null && !email.isEmpty) {
-        val putFuture = requestHolder.withQueryString(("filename", file.getName), ("email", email), ("lastModified", file.lastModified.toString)).put(file)
-        putFuture.onComplete {
-          case Success(response) =>
-            trackFile(file)
-            logger.debug(s"file uploaded and tracked. file id: ${response.body}")
-          case Failure(t) => logger.error("failed to send file", t)
-        }
+        upload(file: File, apiUrl.replace("$email", email), email, tag)
       } else logger.error(s"no email address configured")
     } else logger.error(s"no api URL")
+  }
+
+  def upload(file: File, apiUrl: String, email: String, tag: Option[String])(implicit ec: ExecutionContext) {
+    var requestHolder = url(apiUrl).withQueryString(("filename", file.getName), ("email", email), ("lastModified", file.lastModified.toString))
+    requestHolder = tag match {
+      case Some(tagName) => requestHolder.withQueryString(("tag", tagName))
+      case None => requestHolder
+    }
+    val putFuture = requestHolder.put(file)
+    val start = System.currentTimeMillis()
+    putFuture.onComplete {
+      case Success(response) =>
+        trackFile(file)
+        val end = System.currentTimeMillis()
+        logger.debug(s"file uploaded and tracked. file id: ${response.body}. Time ${end - start}")
+      case Failure(t) => logger.error("failed to send file", t)
+    }
   }
 
   def url(url: String) = {

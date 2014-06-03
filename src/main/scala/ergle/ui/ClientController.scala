@@ -1,6 +1,6 @@
 package ergle.ui
 
-import javafx.collections.{ObservableList, ListChangeListener, FXCollections}
+import javafx.collections.ListChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -11,11 +11,9 @@ import java.io.File
 import javafx.util.Callback
 import javafx.collections.ListChangeListener.Change
 import scala.Predef._
-import scala.collection.JavaConverters._
-import ergle.{Main, ConfigProvider, PathsConfig}
+import ergle.{Main, ConfigProvider}
 import javafx.scene.image.{Image, ImageView}
 import javafx.application.Platform
-import ergle.synch.FileLister
 
 object ClientController {
   def getFunctionAsListChangeListener(function: () => Unit) = {
@@ -25,11 +23,11 @@ object ClientController {
   }
 }
 
-class ClientController extends PathsConfig {
+class ClientController {
+
+  val watchedPaths: PathsListBox = new PathsListBox()
 
   def initialize() {
-    val watchedPaths: PathsListBox = new PathsListBox()
-    watchedPaths.content = watchedDirectoriesList
     watchedPathsContainer.setContent(watchedPaths)
     emailField.setText(ConfigProvider.config.getString(ConfigProvider.emailKey))
   }
@@ -40,15 +38,6 @@ class ClientController extends PathsConfig {
     }
   }
 
-  private def loadWatchedDirectories: ObservableList[String] = {
-    val saved = read()
-    val values: ObservableList[String] = FXCollections.observableArrayList(saved.asJava)
-    values.addListener(ClientController.getFunctionAsListChangeListener(() => {
-      save(values.asScala)
-    }))
-    values
-  }
-
   @FXML private def browse() {
     val directoryChooser: DirectoryChooser = new DirectoryChooser
     directoryChooser.setTitle("Browse directories")
@@ -56,8 +45,7 @@ class ClientController extends PathsConfig {
     val selectedDirectory: File = directoryChooser.showDialog(stage)
     if (selectedDirectory != null) {
       if (selectedDirectory.isDirectory) {
-        watchedDirectoriesList.add(selectedDirectory.getAbsolutePath)
-        purgeTrackingFiles(selectedDirectory)
+        watchedPaths.add(selectedDirectory.getAbsolutePath)
       }
     }
     else {
@@ -65,9 +53,6 @@ class ClientController extends PathsConfig {
     }
   }
 
-  def purgeTrackingFiles(directory: File) {
-    new File(directory, FileLister.trackingDirectory).listFiles().foreach(_.delete())
-  }
 
   def showWarning() {
     val dialog: Stage = new Stage
@@ -105,7 +90,6 @@ class ClientController extends PathsConfig {
 
   @FXML private var stage: Stage = null
   @FXML private var watchedPathsContainer: ScrollPane = null
-  val watchedDirectoriesList: ObservableList[String] = loadWatchedDirectories
   @FXML private var emailField: TextField = null
   @FXML private var emailSaveButton: Button = null
 }

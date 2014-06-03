@@ -5,6 +5,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatest.FlatSpec
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
+import ergle.TagAndPath
 
 class FolderSyncherSpec extends FlatSpec with MockitoSugar {
   "FolderSyncher" should
@@ -21,11 +22,11 @@ class FolderSyncherSpec extends FlatSpec with MockitoSugar {
     folderSyncherImpl.fileLister = lister
     folderSyncherImpl.fileSender = sender
 
-    folderSyncherImpl.synch(path)
+    folderSyncherImpl.synch(TagAndPath(None, path))
 
     verify(lister).list(path)
-    verify(sender).send(pathFile1)
-    verify(sender).send(pathFile2)
+    verify(sender).send(pathFile1, None)
+    verify(sender).send(pathFile2, None)
   }
 
 }

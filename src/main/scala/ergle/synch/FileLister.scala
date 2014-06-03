@@ -60,6 +60,7 @@ class FileLister extends Logging {
 }
 
 class ErgleFileFilter extends FileFilter {
+  //todo: add .lnk files to exclusions
   val exclude = Array("desktop.ini", "Thumbs.db")
 
   override def accept(file: File): Boolean = {

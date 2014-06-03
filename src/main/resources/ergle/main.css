@@ -3,6 +3,12 @@
     -fx-background-color: transparent;
 }
 
+.combo-box {
+    -fx-background-color: transparent;
+    -fx-border-color: #999;
+    -fx-border-style: solid;
+}
+
 .controlButton {
     -fx-border-color: #999;
     -fx-border-style: solid;

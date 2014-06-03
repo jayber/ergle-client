@@ -24,7 +24,7 @@ class FileSenderSpec extends FlatSpec with MockitoSugar {
 
     val (file, requestHolder) = setUpOtherMocks(email)
 
-    send(file)
+    send(file, None)
 
     verify(requestHolder).put(file)
 
@@ -46,7 +46,7 @@ class FileSenderSpec extends FlatSpec with MockitoSugar {
 
     val (file, requestHolder) = setUpOtherMocks(email)
 
-    send(file)
+    send(file, None)
 
     verifyNoMoreInteractions(requestHolder)
 
@@ -68,7 +68,7 @@ class FileSenderSpec extends FlatSpec with MockitoSugar {
 
     val (file, requestHolder) = setUpOtherMocks(email)
 
-    send(file)
+    send(file, None)
 
     verifyNoMoreInteractions(requestHolder)
 
