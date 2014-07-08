@@ -13,17 +13,25 @@ trait PathsConfig {
   val configFile: File = new File(ConfigProvider.parent, "paths.list")
 
   def read() = {
+    def getBlankOpt(value: String) = value match {
+      case "" => None
+      case _ => Some(value)
+    }
+
     var list = mutable.Buffer[TagAndPath]()
     if (configFile.exists()) list ++= Source.fromFile(configFile).getLines().map {
       line =>
-        val parts = line.split('=')
-        parts.length match {
-          case 2 => TagAndPath(parts(0) match {
-            case "" => None
-            case _ => Some(parts(0))
-          }, parts(1))
-          case _ => TagAndPath(None, parts(0))
-        }
+        val parts = line.split(',')
+        TagAndPath(
+          parts.length match {
+            case 3 => getBlankOpt(parts(2))
+            case _ => None
+          },
+          parts.length match {
+            case 1 => None
+            case _ => getBlankOpt(parts(1))
+          },
+          parts(0))
     }
     list
   }
@@ -37,4 +45,4 @@ trait PathsConfig {
   }
 }
 
-case class TagAndPath(tag: Option[String], path: String)
+case class TagAndPath(shareTo: Option[String], tag: Option[String], path: String)

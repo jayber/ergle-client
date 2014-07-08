@@ -1,41 +1,32 @@
 package ergle.ui
 
-import javafx.collections.ListChangeListener
-import javafx.fxml.FXML
-import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
-import javafx.scene.Scene
-import javafx.scene.control._
-import javafx.stage.{Popup, DirectoryChooser, Stage, StageStyle}
 import java.io.File
-import javafx.util.Callback
-import javafx.collections.ListChangeListener.Change
-import scala.Predef._
-import ergle.{Main, ConfigProvider}
-import javafx.scene.image.{Image, ImageView}
 import javafx.application.Platform
+import javafx.beans.value.{ChangeListener, ObservableValue}
+import javafx.fxml.{FXML, FXMLLoader}
+import javafx.scene.{Parent, Scene}
+import javafx.scene.control._
+import javafx.scene.image.{Image, ImageView}
+import javafx.scene.layout.GridPane
+import javafx.stage.{DirectoryChooser, Popup, Stage, StageStyle}
 
-object ClientController {
-  def getFunctionAsListChangeListener(function: () => Unit) = {
-    new ListChangeListener[String] {
-      def onChanged(p1: Change[_ <: String]) = function()
-    }
-  }
-}
+import ergle.{ConfigProvider, Main}
+
 
 class ClientController {
 
-  val watchedPaths: PathsListBox = new PathsListBox()
+  @FXML private var stage: Stage = null
+  @FXML private var watchedPathsContainer: GridPane = null
+  @FXML private var emailField: TextField = null
+  @FXML private var saveButton: Button = null
+
+  var watchedPaths: PathsListBox = null
 
   def initialize() {
-    watchedPathsContainer.setContent(watchedPaths)
-    emailField.setText(ConfigProvider.config.getString(ConfigProvider.emailKey))
-  }
+    watchedPaths = new PathsListBox(watchedPathsContainer, saveButton)
 
-  def getFunctionAsCallBack(function: (ListView[String] => ListCell[String])) = {
-    new Callback[ListView[String], ListCell[String]] {
-      def call(p1: ListView[String]): ListCell[String] = function(p1)
-    }
+    emailField.setText(ConfigProvider.config.getString(ConfigProvider.emailKey))
+    emailField.textProperty.addListener(new ChangeButton(saveButton))
   }
 
   @FXML private def browse() {
@@ -53,7 +44,6 @@ class ClientController {
     }
   }
 
-
   def showWarning() {
     val dialog: Stage = new Stage
     dialog.setTitle("Warning")
@@ -67,11 +57,15 @@ class ClientController {
     dialog.show()
   }
 
-  @FXML def saveEmail() {
+  @FXML def save() {
     ConfigProvider.save(ConfigProvider.emailKey, emailField.getText)
+    watchedPaths.save()
+    showTick()
+  }
 
+  def showTick() {
     val popup = new Popup
-    popup.getContent().addAll(new ImageView(new Image("tick.png")))
+    popup.getContent.addAll(new ImageView(new Image("tick.png")))
     popup.show(Main.mainStage)
 
     new Thread(new Runnable() {
@@ -85,11 +79,11 @@ class ClientController {
         })
       }
     }).start()
-
   }
+}
 
-  @FXML private var stage: Stage = null
-  @FXML private var watchedPathsContainer: ScrollPane = null
-  @FXML private var emailField: TextField = null
-  @FXML private var emailSaveButton: Button = null
+class ChangeButton(button: Button) extends ChangeListener[String] {
+  override def changed(p1: ObservableValue[_ <: String], p2: String, p3: String) {
+    button.setDisable(false)
+  }
 }
