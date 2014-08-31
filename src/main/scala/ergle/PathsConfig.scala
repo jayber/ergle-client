@@ -18,11 +18,11 @@ trait PathsConfig {
       case _ => Some(value)
     }
 
-    var list = mutable.Buffer[TagAndPath]()
+    var list = mutable.Buffer[UploadFolder]()
     if (configFile.exists()) list ++= Source.fromFile(configFile).getLines().map {
       line =>
         val parts = line.split(',')
-        TagAndPath(
+        UploadFolder(
           parts.length match {
             case 3 => getBlankOpt(parts(2))
             case _ => None
@@ -45,4 +45,4 @@ trait PathsConfig {
   }
 }
 
-case class TagAndPath(shareTo: Option[String], tag: Option[String], path: String)
+case class UploadFolder(shareTo: Option[String], tag: Option[String], path: String)

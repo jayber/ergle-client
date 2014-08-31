@@ -3,7 +3,7 @@ package ergle.synch
 import javax.inject.{Inject, Named, Singleton}
 import java.io.File
 import play.api.libs.ws.WS
-import ergle.ConfigProvider
+import ergle.{UploadFolder, ConfigProvider}
 import scala.concurrent.ExecutionContext
 import com.typesafe.scalalogging.slf4j.Logging
 import scala.util.{Failure, Success}
@@ -15,22 +15,26 @@ class FileSender extends Logging {
   @Inject
   var configProvider: ConfigProvider = null
 
-  def send(file: File, tag: Option[String])(implicit ec: ExecutionContext) {
+  def send(file: File, uploadFolder: UploadFolder)(implicit ec: ExecutionContext) {
     logger.debug(s"sending file: ${file.getName}")
 
     val apiUrl = configProvider.config.getString(ConfigProvider.apiUrlKey)
     if (apiUrl != null && !apiUrl.isEmpty) {
       val email = configProvider.config.getString(ConfigProvider.emailKey)
       if (email != null && !email.isEmpty) {
-        upload(file: File, apiUrl.replace("$email", email), email, tag)
+        upload(file: File, apiUrl.replace("$email", email), email, uploadFolder)
       } else logger.error(s"no email address configured")
     } else logger.error(s"no api URL")
   }
 
-  def upload(file: File, apiUrl: String, email: String, tag: Option[String])(implicit ec: ExecutionContext) {
+  def upload(file: File, apiUrl: String, email: String, uploadFolder: UploadFolder)(implicit ec: ExecutionContext) {
     var requestHolder = url(apiUrl).withQueryString(("filename", file.getName), ("email", email), ("lastModified", file.lastModified.toString))
-    requestHolder = tag match {
+    requestHolder = uploadFolder.tag match {
       case Some(tagName) => requestHolder.withQueryString(("tag", tagName))
+      case None => requestHolder
+    }
+    requestHolder = uploadFolder.shareTo match {
+      case Some(shareTo) => requestHolder.withQueryString(("shareTo", shareTo))
       case None => requestHolder
     }
     val putFuture = requestHolder.put(file)
@@ -49,7 +53,6 @@ class FileSender extends Logging {
   }
 
   def trackFile(file: File) {
-
     val ergleDirectory = new File(file.getParentFile, FileLister.trackingDirectory)
 
     ergleDirectory.exists() match {
@@ -69,5 +72,4 @@ class FileSender extends Logging {
         trackFile.setLastModified(System.currentTimeMillis())
     }
   }
-
 }
